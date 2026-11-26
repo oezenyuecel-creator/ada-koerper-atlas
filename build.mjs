@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 const dir = dirname(fileURLToPath(import.meta.url));
 const src = (f) => readFileSync(join(dir, 'src', f), 'utf8');
-const JS_ORDER = ['engine.js', 'data-kapitel.js', 'data-fragen.js', 'diagrams.js', 'app.js', 'widgets.js'];
+const JS_ORDER = ['engine.js', 'data-kapitel.js', 'data-fragen.js', 'dg-core.js', 'dg-skelett.js', 'dg-muskeln.js', 'dg-organe.js', 'dg-haut.js', 'app.js', 'widgets.js'];
 
 const css = src('styles.css');
 const js = JS_ORDER.map((f) => `/* ===== ${f} ===== */\n` + src(f)).join('\n');

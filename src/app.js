@@ -140,10 +140,11 @@
 
   /* ================= SVG-Grafiken ================= */
   var SVGNS = 'http://www.w3.org/2000/svg';
+  var SVG_SEQ = 0;
   function svgString(did, opt) {
     opt = opt || {};
     var d = DG[did];
-    var cls = 'dg dg-' + did + (d.hl === 'glow' ? ' glow' : ' rc') + (opt.quiz ? ' quiz' : '') + (opt.cls ? ' ' + opt.cls : '');
+    var cls = 'dg dg-' + did + (opt.quiz ? ' quiz' : '') + (opt.vb ? ' fvz' : '') + (opt.cls ? ' ' + opt.cls : '');
     var mk = '';
     if (opt.markers) {
       var list = opt.markerParts ? opt.markerParts : d.parts.map(function (p) { return p.id; });
@@ -151,15 +152,15 @@
         var p = partOf(did, pid); if (!p || !p.mk || !p.mk.length) return;
         var n = opt.markerNums ? opt.markerNums[i] : (i + 1);
         p.mk.forEach(function (m) {
-          mk += '<g class="mk" data-mk="' + pid + '"><line x1="' + m[0] + '" y1="' + m[1] + '" x2="' + m[2] + '" y2="' + m[3] + '"/><circle cx="' + m[2] + '" cy="' + m[3] + '" r="2.2" class="mk-a"/>' +
-            '<circle cx="' + m[0] + '" cy="' + m[1] + '" r="9.5"/><text x="' + m[0] + '" y="' + (m[1] + 3.6) + '">' + n + '</text></g>';
+          var ln = 'M' + m[0] + ',' + m[1] + ' L' + m[2] + ',' + m[3];
+          mk += '<g class="mk" data-mk="' + pid + '"><path class="mk-h" d="' + ln + '"/><path class="mk-l" d="' + ln + '"/><circle cx="' + m[2] + '" cy="' + m[3] + '" r="2.3" class="mk-a"/>' +
+            '<circle class="mk-c" cx="' + m[0] + '" cy="' + m[1] + '" r="9.6" filter="url(#{P}shS)"/><text x="' + m[0] + '" y="' + (m[1] + 3.7) + '">' + n + '</text></g>';
         });
       });
     }
-    var vb = (opt.vb || d.vb).join(' ');
-    return '<svg class="' + cls + '" viewBox="' + vb + '" role="img" aria-label="' + esc(d.title) + '" xmlns="' + SVGNS + '">' +
-      '<defs><filter id="glowF" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="0" stdDeviation="2.6" flood-color="#E2F94B" flood-opacity="1"/><feDropShadow dx="0" dy="0" stdDeviation="1" flood-color="#3F6212" flood-opacity="1"/></filter></defs>' +
-      '<g class="dgc">' + d.render() + '</g><g class="mks">' + mk + '</g><g class="rings"></g></svg>';
+    var vb = (opt.vb || d.vb).join(' '), pfx = 'g' + (++SVG_SEQ).toString(36) + '-';
+    return ('<svg class="' + cls + '" viewBox="' + vb + '" role="img" aria-label="' + esc(d.title) + '" xmlns="' + SVGNS + '" data-pfx="' + pfx + '">' +
+      '<defs>' + A.G.defs(opt.vb ? opt.vb[2] / d.vb[2] : 1) + '</defs><g class="dgc">' + d.render() + '</g><g class="mks">' + mk + '</g><g class="rings"></g></svg>').replace(/\{P\}/g, pfx);
   }
   function partEls(svg, pid) { return $$('[data-part="' + pid + '"]', svg); }
   function chainAt(el) {
@@ -167,32 +168,44 @@
     while (el && el.tagName && el.tagName.toLowerCase() !== 'svg') { if (el.getAttribute && el.getAttribute('data-part')) out.push(el.getAttribute('data-part')); el = el.parentNode; }
     return out;
   }
+  // Markierung: Teil leuchtet (Filter), Licht und Schatten bleiben erhalten
+  function markPart(svg, pid, cls, did) {
+    var pfx = svg.getAttribute('data-pfx') || '', glow = cls === 'hl' && did && DG[did] && DG[did].hl === 'glow';
+    partEls(svg, pid).forEach(function (e) {
+      e.classList.add(cls);
+      e.setAttribute('filter', 'url(#' + pfx + (glow ? 'glow' : cls) + ')');
+      var a = e.parentNode;
+      while (a && a !== svg) { if (a.classList && a.classList.contains('part')) a.classList.add('hl-anc'); a = a.parentNode; }
+    });
+  }
   function clearHL(svg) {
+    $$('.hl,.sel,.bad', svg).forEach(function (e) { e.removeAttribute('filter'); });
     $$('.hl,.hl-anc,.sel,.bad,.ok', svg).forEach(function (e) { e.classList.remove('hl', 'hl-anc', 'sel', 'bad', 'ok'); });
     svg.classList.remove('dim');
     var r = $('.rings', svg); if (r) r.innerHTML = '';
   }
   function anchorOf(svg, did, pid) {
     var p = partOf(did, pid);
-    if (p && p.mk && p.mk.length) return [p.mk[0][2], p.mk[0][3]];
+    if (p && p.mk && p.mk.length) {
+      var a = [p.mk[0][2], p.mk[0][3]], v = (svg.getAttribute('viewBox') || '').split(/\s+/).map(Number), dv = DG[did].vb;
+      // vergrößerter Ausschnitt einer symmetrischen Figur: Ring auf die sichtbare Seite spiegeln
+      if (v.length === 4 && (a[0] < v[0] || a[0] > v[0] + v[2])) { var mx = 2 * (dv[0] + dv[2] / 2) - a[0]; if (mx >= v[0] && mx <= v[0] + v[2]) a[0] = mx; }
+      return a;
+    }
     var el = partEls(svg, pid)[0];
     try { var b = el.getBBox(); return [b.x + b.width / 2, b.y + b.height / 2]; } catch (e) { return null; }
   }
   function highlight(svg, did, pid, opt) {
     opt = opt || {};
     clearHL(svg);
-    partEls(svg, pid).forEach(function (e) {
-      e.classList.add(opt.cls || 'hl');
-      var a = e.parentNode;
-      while (a && a !== svg) { if (a.classList && a.classList.contains('part')) a.classList.add('hl-anc'); a = a.parentNode; }
-    });
+    markPart(svg, pid, opt.cls || 'hl', did);
     if (opt.dim !== false) svg.classList.add('dim');
     if (opt.ring) {
       var at = anchorOf(svg, did, pid);
       if (at) $('.rings', svg).innerHTML = '<circle class="ring" cx="' + at[0] + '" cy="' + at[1] + '" r="13"/><circle class="ring ring2" cx="' + at[0] + '" cy="' + at[1] + '" r="13"/>';
     }
   }
-  A.ui.svgString = svgString; A.ui.highlight = highlight; A.ui.clearHL = clearHL; A.ui.chainAt = chainAt; A.ui.partOf = partOf;
+  A.ui.svgString = svgString; A.ui.highlight = highlight; A.ui.clearHL = clearHL; A.ui.chainAt = chainAt; A.ui.partOf = partOf; A.ui.markPart = markPart;
 
   /* Erkunden: Grafik + Legende */
   function explorer(host, did, cap) {
@@ -411,7 +424,7 @@
       });
       ctl.mark = function (res) {
         highlight(svgF, q.diag, q.part, { ring: true });
-        if (res.status !== 'r' && resp && resp[0]) { partEls(svgF, resp[0]).forEach(function (e) { e.classList.add('bad'); }); }
+        if (res.status !== 'r' && resp && resp[0] && resp[0] !== q.part) markPart(svgF, resp[0], 'bad', q.diag);
         var tp = resp && resp[0] ? partOf(q.diag, resp[0]) : null;
         picked.innerHTML = res.status === 'r' ? 'Genau dort! 🎯' : (tp ? 'Du hast <b>' + esc(tp.name) + '</b> angetippt. Grün leuchtet <b>' + esc(partOf(q.diag, q.part).name) + '</b>.' : '');
       };

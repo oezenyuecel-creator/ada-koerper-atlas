@@ -167,6 +167,18 @@ main { max-width: 1040px; margin: 0 auto; padding: 16px 16px 64px; }
 .pnav { display: flex; justify-content: space-between; gap: 10px; margin-top: 14px; font-weight: 700; }
 .pnav a { text-decoration: none; }
 
+/* Bildquiz-Übersicht */
+.dgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-top: 14px; }
+.dcard { display: flex; flex-direction: column; gap: 3px; padding: 10px 12px 12px; background: var(--card); border: 1px solid var(--line); border-top: 5px solid var(--c, var(--pri)); border-radius: var(--r); text-decoration: none; color: var(--ink); box-shadow: var(--sh); transition: transform .1s, box-shadow .15s; }
+.dcard:hover { box-shadow: 0 2px 4px rgba(30, 36, 51, .08), 0 10px 24px rgba(30, 36, 51, .1); }
+.dcard:active { transform: scale(.98); }
+.dcard .thumb { height: 150px; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 45%, #FFFFFF, #EEF3F9); border-radius: 12px; overflow: hidden; margin-bottom: 6px; padding: 6px; }
+.dcard .thumb svg { display: block; width: 100%; height: 100%; }
+.dcard b { font-size: 15px; line-height: 1.3; }
+.dcard small { color: var(--muted); font-size: 13px; }
+.dcard.all { align-items: center; justify-content: center; text-align: center; font-size: 40px; line-height: 1.1; min-height: 150px; background: linear-gradient(135deg, #EAF2FF, #FFF4DE); border-top-color: var(--pri); }
+.dcard.all b { font-size: 16px; margin-top: 8px; }
+
 /* Grafiken */
 .fig { margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 12px; }
 .fig figcaption { color: var(--muted); font-size: 14px; margin-top: 8px; }
@@ -193,134 +205,25 @@ main { max-width: 1040px; margin: 0 auto; padding: 16px 16px 64px; }
 .dtx { font-size: 11px; fill: #4A5568; font-weight: 700; }
 .dtx.small { font-size: 9.5px; font-weight: 600; }
 .dg.quiz .lbl { display: none; }
-.bo { fill: none; stroke: #8B7A5E; stroke-linecap: round; stroke-linejoin: round; }
-.bi { fill: none; stroke: #F6EDDA; stroke-linecap: round; stroke-linejoin: round; }
-.bf { fill: #F6EDDA; stroke: #8B7A5E; stroke-width: 1.2; }
-.bf2 { fill: #EFE3C6; }
-.bf3 { fill: #FBF3E3; }
-.hole { fill: #FFFFFF; stroke: #8B7A5E; stroke-width: 1; }
-.sk-d { fill: #5A4A38; }
-.sk-l { fill: none; stroke: #8B7A5E; stroke-width: 1; }
-.cart { fill: none; stroke: #CDBF9F; stroke-width: 2.4; stroke-linecap: round; }
 .hit { fill: none; stroke: transparent; pointer-events: stroke; }
 .hitr { fill: transparent; }
 .part { cursor: pointer; }
-.ear-bg { fill: #FBEDE3; }
-.ear-skin { fill: #F2C9A8; stroke: #A9785C; stroke-width: 1.3; }
-.ear-canal { fill: #E9B494; stroke: #A9785C; stroke-width: 1; }
-.ear-mid { fill: #FFF8F0; stroke: #C9A88E; stroke-width: 1.2; stroke-dasharray: 4 3; }
-.ear-drum { fill: #E0A8A8; stroke: #8E5C5C; stroke-width: 1; }
-.ear-in { fill: none; stroke: #C9A26A; stroke-width: 2; }
-.ear-coch { fill: #F3E2BD; stroke: #A98946; stroke-width: 1.4; fill-rule: evenodd; }
-.ear-canals { fill: none; stroke: #A98946; stroke-width: 4; stroke-linecap: round; }
-.ear-nerve { fill: none; stroke: #E8C547; stroke-width: 3; stroke-linecap: round; }
-.vb { fill: #EADFC7; stroke: #8B7A5E; stroke-width: 1; }
-.vbp { fill: #F3EBDA; }
-.vb2 { fill: #DCCDB0; }
-.vbl { stroke: #A89878; stroke-width: 1; }
-.vbh { fill: #FFFFFF; stroke: #8B7A5E; stroke-width: 1; }
-.disc { fill: #E0564F; stroke: #A3342F; stroke-width: .8; }
-.brk { fill: none; stroke: #B9AE9D; stroke-width: 1.4; }
-.kid-skin, .mu-skin, .org-skin, .kidskin { fill: #F7E4D4; stroke: #A47E66; stroke-width: 1.3; stroke-linejoin: round; }
-.kidskin2 { fill: #F7E4D4; }
-.kid-hair, .mu-hair { fill: #6B4F3A; }
-.kid-eye { fill: #2B2B2B; }
-.kid-line { fill: none; stroke: #2B2B2B; stroke-width: 1.8; stroke-linecap: round; }
-.kid-shirt { fill: #CDEBE5; stroke: #6FA79B; stroke-width: 1.2; }
-.kid-short, .mu-short { fill: #A7C3E3; stroke: #6E8FB8; stroke-width: 1.1; }
-.kid-shoe { fill: #5B6B7E; }
-.jt { fill: #FFFFFF; stroke: #1E2433; stroke-width: 2.4; }
-.jt2 { fill: #1E2433; }
-.mv-arrow { fill: none; stroke: #0E8A7E; stroke-width: 2.4; stroke-dasharray: 5 4; stroke-linecap: round; }
-.mu { fill: #E89180; stroke: #B5574A; stroke-width: 1; }
-.mu-ring { fill: none; stroke: #E07766; stroke-width: 2.6; }
-.brain { fill: #F4C3C3; stroke: #B06D6D; stroke-width: 1.2; }
-.brain2 { fill: #E9B0B0; }
-.brain-l { fill: none; stroke: #C68888; stroke-width: 1.2; stroke-linecap: round; }
-.trach { fill: #CFDDF0; stroke: #6F8FB5; stroke-width: 1.1; }
-.trach-l { stroke: #8FA9CC; stroke-width: 1; }
-.bronch { fill: none; stroke: #8FA9CC; stroke-width: 5; stroke-linecap: round; }
-.br-o { fill: none; stroke: #6F8FB5; stroke-width: 9; stroke-linecap: round; }
-.br-i { fill: none; stroke: #CFDDF0; stroke-width: 6; stroke-linecap: round; }
-.lung { fill: #F4ABAB; stroke: #C26A6A; stroke-width: 1.3; }
-.lung-lt { fill: #F8CFCF; }
-.lung-l { fill: none; stroke: #D88C8C; stroke-width: 1.4; stroke-linecap: round; }
-.heart { fill: #D84A4A; stroke: #8E2B2B; stroke-width: 1.3; }
-.heart-a { fill: none; stroke: #D84A4A; stroke-width: 5; stroke-linecap: round; }
-.liver { fill: #B5573D; stroke: #7A3522; stroke-width: 1.3; }
-.stom { fill: #F0A08C; stroke: #B86553; stroke-width: 1.3; }
-.kidn { fill: #A9473B; stroke: #6E2A22; stroke-width: 1.2; }
-.ureter { fill: none; stroke: #E6C35C; stroke-width: 2; }
-.colon-o { fill: none; stroke: #B5743F; stroke-width: 16; stroke-linecap: round; stroke-linejoin: round; }
-.colon-i { fill: none; stroke: #EDB47F; stroke-width: 12.5; stroke-linecap: round; stroke-linejoin: round; }
-.colon-h { fill: none; stroke: #D39461; stroke-width: 12.5; stroke-dasharray: 1.5 6; }
-.si-o { fill: none; stroke: #C9776A; stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; }
-.si-i { fill: none; stroke: #F6B6A6; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
-.blad { fill: #F3D46B; stroke: #B39126; stroke-width: 1.3; }
-.dia-l { fill: none; stroke: #C9A27A; stroke-width: 2.4; }
-.eso { fill: none; stroke: #E7A08F; stroke-width: 6; stroke-linecap: round; }
-.eso2 { stroke: #E08B77; }
-.mouth { fill: #D9534F; }
-.bile { fill: none; stroke: #6BA84F; stroke-width: 2.2; stroke-dasharray: 3 3; }
-.anus { fill: #B5743F; }
-.skin-line { fill: none; stroke: #A47E66; stroke-width: 1.3; }
-.airway { fill: #BFD9F0; stroke: #6F9CC6; stroke-width: 1; }
-.tree { fill: none; stroke: #C77B7B; stroke-width: 2; stroke-linecap: round; }
-.alv { fill: #F9D6D6; stroke: #C27070; stroke-width: .9; }
-.alv-b { stroke-width: 1.4; }
-.mag-c { fill: #FFFFFF; stroke: #4A5568; stroke-width: 3; }
-.mag-l { fill: none; stroke: #4A5568; stroke-width: 1.2; stroke-dasharray: 3 3; }
-.mag-h { stroke: #4A5568; stroke-width: 7; stroke-linecap: round; }
-.cap-r { fill: none; stroke: #D9534F; stroke-width: 3; }
-.cap-b { fill: none; stroke: #4F7FD6; stroke-width: 3; }
-.o2 { stroke: #D9534F; stroke-width: 2.4; }
-.co2 { stroke: #4F7FD6; stroke-width: 2.4; }
+.brk { fill: none; stroke: #B3A797; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
 .gtx { font-size: 10px; font-weight: 800; }
 .gtx-o { fill: #C0392B; }
 .gtx-c { fill: #2F5DB8; }
-.diaf { fill: #E5BE95; stroke: #A97A4F; stroke-width: 1.2; }
 .air { fill: none; stroke: #4F7FD6; stroke-width: 3; stroke-linecap: round; opacity: 0; transition: opacity .4s; }
 .air2 { stroke: #8A94A6; }
+.airh { opacity: 0; transition: opacity .4s; }
+.dg.insp .air-in .airh, .dg.exsp .air-out .airh { opacity: 1; }
+.dtx.halo { paint-order: stroke; stroke: #FFFFFF; stroke-width: 4px; stroke-linejoin: round; }
 .thorax { transform-box: view-box; transform-origin: 149px 250px; transition: transform 1.8s ease-in-out; }
 .dia { transform-box: view-box; transform-origin: 149px 330px; transition: transform 1.8s ease-in-out; }
 .dg.insp .thorax { transform: scale(1.05); }
 .dg.insp .dia { transform: translateY(10px) scaleY(.85); }
 .dg.insp .air-in .air { opacity: 1; }
 .dg.exsp .air-out .air { opacity: 1; }
-.capnet { fill: none; stroke: #C77B9A; stroke-width: 1.2; stroke-dasharray: 2 3; }
-.h-right { fill: #6F8FCF; stroke: #2F4E8E; stroke-width: 1.3; }
-.h-left { fill: #D9534F; stroke: #8E2B2B; stroke-width: 1.3; }
-.septum { stroke: #FFFFFF; stroke-width: 2; }
-.ves { fill: none; stroke-width: 9; stroke-linecap: round; }
-.v-red { stroke: #D23A4B; }
-.v-blue { stroke: #3F6CCB; }
-.body-box { fill: #FBF1E6; stroke: #C9A88E; stroke-width: 1.4; }
 .flow { stroke: #FFFFFF; stroke-width: 1; }
-.sk-top { fill: #F3CDB2; stroke: #A0705A; stroke-width: 1.1; }
-.sk-sub { fill: #FCF0CC; stroke: #C9A54A; stroke-width: 1; }
-.fat { fill: #F7DD92; stroke: #C9A54A; stroke-width: 1; }
-.sk-epi { fill: #F2BE9E; stroke: #A0705A; stroke-width: 1; }
-.sk-horn { fill: #E2A27F; }
-.sk-scale { stroke: #B9785A; stroke-width: 1; }
-.sk-der { fill: #F9DED3; stroke: #C99686; stroke-width: 1; }
-.sk-fib { fill: none; stroke: #EDC1B3; stroke-width: 1.2; }
-.vr { fill: none; stroke: #D9534F; stroke-width: 3; stroke-linecap: round; }
-.vbl2 { fill: none; stroke: #4F7FD6; stroke-width: 3; stroke-linecap: round; }
-.vthin { stroke-width: 1.6; }
-.vthick { stroke-width: 5; }
-.nerve { fill: none; stroke: #E2B930; stroke-width: 2.2; stroke-linecap: round; }
-.nerve-big { stroke-width: 5; }
-.corp { fill: #F7E4A5; stroke: #B8962E; stroke-width: 1.1; }
-.corp-r { fill: none; stroke: #B8962E; stroke-width: .9; }
-.corp-l { stroke: #B8962E; stroke-width: .9; }
-.fol { fill: #EBC0A6; stroke: #A0705A; stroke-width: 1; }
-.bulb { fill: #C98A6C; stroke: #8E5A45; stroke-width: 1; }
-.shaft { fill: none; stroke: #4A3426; stroke-width: 2.6; stroke-linecap: round; }
-.amus { fill: #D9776A; stroke: #A54A40; stroke-width: .9; }
-.seb { fill: #F0D27A; stroke: #B89536; stroke-width: 1; }
-.sweat { fill: none; stroke: #4F9AD6; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
-.sweat-d { stroke-width: 2.4; }
-.pore { fill: #4F9AD6; }
 .drop { fill: #7DBDF0; opacity: 0; }
 .hairrot, .amus-g { transform-box: view-box; transition: transform .7s ease; }
 .hr-136 { transform-origin: 110px 186px; }
@@ -329,42 +232,30 @@ main { max-width: 1040px; margin: 0 auto; padding: 16px 16px 64px; }
 .amus-2 { transform-origin: 258px 98px; }
 .dg.goose .hairrot { transform: rotate(-13deg); }
 .dg.goose .amus-g { transform: scale(.8); }
-.dg.goose .amus { fill: #C2453A; }
 .dg.sweaty .drop { animation: drip 2.2s infinite; }
 .dg.sweaty .d2 { animation-delay: .6s; }
 .dg.sweaty .d3 { animation-delay: 1.2s; }
 @keyframes drip { 0% { opacity: 0; transform: translateY(6px); } 25% { opacity: 1; } 100% { opacity: 0; transform: translateY(-22px); } }
-.needle { stroke: #6B7280; stroke-width: 3; stroke-linecap: round; }
-.burst { stroke: #F59E0B; stroke-width: 2; stroke-linecap: round; }
-.den { fill: #4A58D0; }
-.sun { fill: #FFC93C; }
-.sun-r { stroke: #FFB703; stroke-width: 4; stroke-linecap: round; }
-.arrowline { stroke: #9AA5B4; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 2 6; }
-.vitd { fill: #FFF3C4; stroke: #E0A100; stroke-width: 2; }
 .vitd-t { font-size: 13px; font-weight: 800; fill: #8A5A00; }
 
 /* Marker (Nummern) */
-.mk line { stroke: #1E2433; stroke-width: 1; opacity: .55; }
-.mk circle { fill: #1E2433; }
-.mk .mk-a { fill: #1E2433; }
+.mk .mk-h { fill: none; stroke: #FFFFFF; stroke-width: 3.2; stroke-linecap: round; opacity: .85; }
+.mk .mk-l { fill: none; stroke: #1E2433; stroke-width: 1.1; stroke-linecap: round; }
+.mk .mk-a { fill: #FFFFFF; stroke: #1E2433; stroke-width: 1.3; }
+.mk .mk-c { fill: #1E2433; stroke: #FFFFFF; stroke-width: 2; }
 .mk text { fill: #FFFFFF; font-size: 10.5px; font-weight: 800; text-anchor: middle; }
 .mk { cursor: pointer; }
+.mk .mk-c { transition: fill .15s; }
+.mk:hover .mk-c { fill: #2B3550; }
 
 /* Hervorheben */
-.dg.rc .hl :is(.bf, .vb, .disc, .mu, .lung, .heart, .liver, .stom, .kidn, .blad, .brain, .sk-epi, .sk-der, .sk-sub, .sk-horn, .fat, .corp, .seb, .fol, .bulb, .ear-skin, .ear-canal, .ear-drum, .ear-coch, .trach, .airway, .diaf, .jt, .amus, .mouth, .alv, .kid-skin) { fill: var(--hl) !important; }
-.dg.rc .hl :is(.bi, .br-i, .colon-i, .si-i, .mu-ring, .tree, .nerve, .sweat, .vr, .vbl2, .eso, .shaft, .ear-canals, .ureter, .bronch, .cart, .heart-a, .bile) { stroke: var(--hl) !important; }
-.dg.rc .hl :is(.bo, .br-o, .colon-o, .si-o, .bf, .vb, .mu, .lung, .heart, .liver, .stom, .kidn, .blad, .brain, .fat, .jt, .airway, .trach) { stroke: var(--hl-d) !important; }
-.dg.rc .hl .colon-h { stroke: #A8D61E !important; }
-.dg.glow .hl { filter: url(#glowF); }
-.dg.dim .part:not(.hl):not(.hl-anc) { opacity: .28; transition: opacity .2s; }
+.dg.dim .part:not(.hl):not(.hl-anc):not(.bad) { opacity: .3; transition: opacity .2s; }
+.dg.fvz .shw { filter: none; }
+.dg.fvz .bgx { display: none; }
+.dg.dim .deco { opacity: .3; transition: opacity .2s; }
 .dg.dim .part.hl .part { opacity: 1; }
 .dg.dim .hl-anc > .part-rest { opacity: .28; }
-.dg .sel :is(.bf, .vb, .disc, .mu, .lung, .heart, .liver, .stom, .kidn, .blad, .brain, .sk-epi, .sk-der, .sk-sub, .fat, .corp, .seb, .fol, .ear-skin, .ear-canal, .ear-drum, .ear-coch, .trach, .airway, .diaf, .jt, .amus, .alv) { fill: var(--sel) !important; }
-.dg .sel :is(.bi, .br-i, .colon-i, .si-i, .tree, .nerve, .sweat, .vr, .vbl2, .eso, .shaft, .ves, .mu-ring) { stroke: var(--sel) !important; }
-.dg .sel :is(.bo, .br-o, .colon-o, .si-o) { stroke: var(--sel-d) !important; }
-.dg .bad :is(.bf, .vb, .mu, .lung, .heart, .liver, .stom, .kidn, .blad, .brain, .sk-epi, .sk-der, .fat, .corp, .seb, .fol, .trach, .airway, .jt, .alv) { fill: #FCA5A5 !important; }
-.dg .bad :is(.bi, .br-i, .colon-i, .si-i, .tree, .nerve, .sweat, .vr, .vbl2, .eso, .shaft, .ves) { stroke: #F87171 !important; }
-.ring { fill: none; stroke: #65A30D; stroke-width: 3; transform-box: fill-box; transform-origin: center; animation: pulse 1.6s ease-out infinite; }
+.ring { fill: none; stroke: #84CC16; stroke-width: 3; transform-box: fill-box; transform-origin: center; animation: pulse 1.6s ease-out infinite; }
 .ring2 { animation-delay: .8s; }
 @keyframes pulse { 0% { transform: scale(.55); opacity: 1; } 100% { transform: scale(1.7); opacity: 0; } }
 
@@ -380,23 +271,12 @@ main { max-width: 1040px; margin: 0 auto; padding: 16px 16px 64px; }
 .dg.jump .disc { transform-box: fill-box; transform-origin: center; animation: discsq .8s ease; }
 @keyframes squish { 0% { transform: none; } 35% { transform: scaleY(.93); } 70% { transform: scaleY(1.015); } 100% { transform: none; } }
 @keyframes discsq { 0% { transform: none; } 35% { transform: scaleY(.55); } 70% { transform: scaleY(1.05); } 100% { transform: none; } }
-.malauftrag [data-part=gesichtsmuskeln] .mu { fill: #F2CC3C; stroke: #A98A12; }
-.malauftrag [data-part=gesichtsmuskeln] .mu-ring { stroke: #E2B91E; }
-.malauftrag [data-part=halsmuskeln] .mu { fill: #9B6CD1; stroke: #5E3A91; }
-.malauftrag [data-part=armmuskeln] .mu, .malauftrag [data-part=brustmuskel] .mu { fill: #4CAF63; stroke: #2E7A3F; }
-.malauftrag [data-part=bauchmuskel] .mu { fill: #3F86D8; stroke: #245A9A; }
-.malauftrag [data-part=beinmuskeln] .mu { fill: #D94A43; stroke: #962C27; }
-.malauftrag [data-part=rueckenmuskel] .mu, .malauftrag [data-part=gesaessmuskel] .mu { fill: #D8D2CA; stroke: #A59D92; }
 .bpath { fill: none; stroke: transparent; }
-.banana text { font-size: 13px; }
 .ban-c { fill: #FFF6C9; stroke: #E0A100; stroke-width: 1.4; }
 .wsvg .armsvg { max-width: 460px; max-height: 340px; }
-.armsvg .tendon { stroke: #CDBB97; stroke-width: 3.4; stroke-linecap: round; }
-.armsvg .bic { fill: #E36F5E; stroke: #A9473C; stroke-width: 1.3; }
-.armsvg .tri { fill: #D9A094; stroke: #9C6157; stroke-width: 1.1; }
-.armhand { fill: #F7E4D4; stroke: #A47E66; stroke-width: 1.3; }
 .sunkid .it { opacity: 0; transition: opacity .3s; }
 .sunkid.w-creme .it-creme, .sunkid.w-shirt .it-shirt, .sunkid.w-hut .it-hut, .sunkid.w-brille .it-brille, .sunkid.w-schatten .it-schatten, .sunkid.w-mittag .it-mittag { opacity: 1; }
+
 
 /* Widgets */
 .widget .wtitle { font-weight: 800; margin-bottom: 8px; }

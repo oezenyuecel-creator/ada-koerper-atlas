@@ -8,7 +8,7 @@ const dir = join(dirname(fileURLToPath(import.meta.url)), '..', 'src');
 const ctx = { window: {}, console };
 ctx.globalThis = ctx;
 vm.createContext(ctx);
-for (const f of ['engine.js', 'data-kapitel.js', 'data-fragen.js', 'diagrams.js']) vm.runInContext(readFileSync(join(dir, f), 'utf8'), ctx, { filename: f });
+for (const f of ['engine.js', 'data-kapitel.js', 'data-fragen.js', 'dg-core.js', 'dg-skelett.js', 'dg-muskeln.js', 'dg-organe.js', 'dg-haut.js']) vm.runInContext(readFileSync(join(dir, f), 'utf8'), ctx, { filename: f });
 const A = ctx.window.ATLAS, E = ctx.window.ENGINE;
 
 let fails = 0, checks = 0;

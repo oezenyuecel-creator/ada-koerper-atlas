@@ -45,16 +45,19 @@
 
   /* ---------- Arm: Bizeps und Trizeps ---------- */
   W.arm = function (host, cap) {
-    var f = frame(host, '💪 Muskeln bewegen den Arm', '<div class="wsvg"><svg class="dg armsvg" viewBox="0 0 360 250" role="img" aria-label="Arm mit Bizeps und Trizeps"></svg></div>' +
+    var f = frame(host, '💪 Muskeln bewegen den Arm', '<div class="wsvg"><svg class="dg armsvg" viewBox="0 0 360 312" role="img" aria-label="Arm mit Bizeps und Trizeps"><defs>' + A.G.defs().replace(/\{P\}/g, 'arm-') + '</defs><g class="armg"></g></svg></div>' +
       '<label class="slider"><span>gestreckt</span><input type="range" min="0" max="100" value="10" aria-label="Arm beugen"><span>gebeugt</span></label>' +
       '<div class="wcols armread"><div class="bz"></div><div class="tz"></div></div><div class="center"><button class="btn" data-a="bend">Beugen</button> <button class="btn" data-a="str">Strecken</button></div>', cap);
-    var svg = $('svg', f), rng = $('input', f), bz = $('.bz', f), tz = $('.tz', f);
+    var grp = $('.armg', f), rng = $('input', f), bz = $('.bz', f), tz = $('.tz', f), G = A.G;
     var S = [84, 46], Eb = [94, 166], L0 = null, L20 = null;
     function sub(a, b) { return [a[0] - b[0], a[1] - b[1]]; } function add(a, b) { return [a[0] + b[0], a[1] + b[1]]; } function mul(a, k) { return [a[0] * k, a[1] * k]; }
     function len(a) { return Math.hypot(a[0], a[1]); } function unit(a) { var l = len(a) || 1; return [a[0] / l, a[1] / l]; } function p(a) { return a[0].toFixed(1) + ',' + a[1].toFixed(1); }
-    function spindle(o, i, th, cls) {
+    function spindle(o, i, th, back) {
       var u = unit(sub(i, o)), n = [-u[1], u[0]], a = add(o, mul(u, 12)), b = sub(i, mul(u, 9)), m = mul(add(a, b), 0.5);
-      return '<path class="tendon" d="M' + p(o) + ' L' + p(a) + ' M' + p(b) + ' L' + p(i) + '"/><path class="' + cls + '" d="M' + p(a) + ' Q' + p(add(m, mul(n, th * 1.35))) + ' ' + p(b) + ' Q' + p(sub(m, mul(n, th * 1.35))) + ' ' + p(a) + ' Z"/>';
+      var d = 'M' + p(a) + ' Q' + p(add(m, mul(n, th * 1.35))) + ' ' + p(b) + ' Q' + p(sub(m, mul(n, th * 1.35))) + ' ' + p(a) + ' Z';
+      return G.tube('M' + p(o) + ' L' + p(a) + ' M' + p(b) + ' L' + p(i), 3.2, 'ten') +
+        '<g opacity="' + (back ? 0.85 : 1) + '">' + G.muscle(d, { spindle: [a, b], hw: th * 0.9, n: 6 }) +
+        G.gloss(m[0] - n[0] * th * 0.5, m[1] - n[1] * th * 0.5, th * 0.5, th * 0.22, Math.atan2(u[1], u[0]) * 180 / Math.PI, 0.55) + '</g>';
     }
     function draw(v) {
       var al = (8 + 1.3 * v) * Math.PI / 180, dir = [Math.sin(al), Math.cos(al)], pf = [Math.cos(al), -Math.sin(al)];
@@ -64,16 +67,16 @@
       var LB = len(sub(iB, oB)), LT = len(sub(iT, oT));
       if (L0 == null) { L0 = LB; L20 = LT; }
       var thB = Math.max(7, Math.min(26, 10 * Math.pow(L0 / LB, 1.6))), thT = Math.max(4, Math.min(16, 9 * Math.pow(L20 / LT, 1.6)));
-      var s = '<path class="bo" d="M' + p(S) + ' L' + p(Eb) + '" stroke-width="13"/><path class="bi" d="M' + p(S) + ' L' + p(Eb) + '" stroke-width="10.5"/>' +
-        '<circle class="bf" cx="' + S[0] + '" cy="' + S[1] + '" r="10"/>' +
-        '<path class="bo" d="M' + p(Eb) + ' L' + p(W1) + '" stroke-width="11"/><path class="bi" d="M' + p(Eb) + ' L' + p(W1) + '" stroke-width="8.5"/>' +
-        '<circle class="bf" cx="' + Eb[0] + '" cy="' + Eb[1] + '" r="8"/><circle class="armhand" cx="' + hand[0].toFixed(1) + '" cy="' + hand[1].toFixed(1) + '" r="13"/>' +
-        spindle(oT, iT, thT, 'tri') + spindle(oB, iB, thB, 'bic');
+      var s = G.ground(150, 302, 120, 6) +
+        G.tube('M' + p(S) + ' L' + p(Eb), 10.5) + G.tube('M' + p(Eb) + ' L' + p(W1), 8.5) +
+        G.circ(S[0], S[1], 10.5, { fill: 'url(#{P}gBoneR)', stroke: G.C.bone, 'stroke-width': 1 }) + G.gloss(S[0] - 3, S[1] - 3.5, 4, 2.6, -30, 0.85) +
+        G.circ(Eb[0], Eb[1], 8, { fill: 'url(#{P}gBoneR)', stroke: G.C.bone, 'stroke-width': 1 }) +
+        G.circ(hand[0], hand[1], 13.5, { fill: 'url(#{P}gSkinR)', stroke: G.C.skin, 'stroke-width': 1.2 }) +
+        spindle(oT, iT, thT, true) + spindle(oB, iB, thB, false);
       var mB = mul(add(oB, iB), 0.5), mT = mul(add(oT, iT), 0.5);
-      s += '<text class="dtx" x="' + (mB[0] + 24).toFixed(0) + '" y="' + (mB[1] + 4).toFixed(0) + '">Bizeps</text><text class="dtx" x="' + (mT[0] - 64).toFixed(0) + '" y="' + (mT[1] + 4).toFixed(0) + '">Trizeps</text>' +
-        '<text class="dtx small" x="' + (Eb[0] - 76) + '" y="' + (Eb[1] + 28) + '">Ellenbogen</text><text class="dtx small" x="12" y="236">Sehnen = helle Enden</text>';
-      svg.innerHTML = s;
-      var rb = LB / L0, rt = LT / L20;
+      s += '<text class="dtx halo" x="' + (mB[0] + 24).toFixed(0) + '" y="' + (mB[1] + 4).toFixed(0) + '">Bizeps</text><text class="dtx halo" x="' + (mT[0] - 64).toFixed(0) + '" y="' + (mT[1] + 4).toFixed(0) + '">Trizeps</text>' +
+        '<text class="dtx small halo" x="' + (Eb[0] - 76) + '" y="' + (Eb[1] + 28) + '">Ellenbogen</text><text class="dtx small" x="12" y="306">Sehnen = helle Enden</text>';
+      grp.innerHTML = s.replace(/\{P\}/g, 'arm-');
       bz.innerHTML = '<b>Bizeps (Armbeuger)</b><br>' + (v > 20 ? 'zieht sich zusammen: <b>kürzer und dicker</b> ✓' : 'entspannt: lang und flach');
       tz.innerHTML = '<b>Trizeps (Gegenspieler)</b><br>' + (v > 20 ? 'wird gedehnt: <b>länger und dünner</b>' : 'zieht sich zusammen und streckt den Arm');
     }
@@ -86,7 +89,9 @@
 
   /* ---------- Malauftrag Muskeln ---------- */
   W.muskelfarben = function (host, cap) {
-    frame(host, '🎨 Malauftrag aus dem Heft', '<div class="wsvg">' + A.ui.svgString('muskeln', { cls: 'malauftrag' }) + '</div><div class="legendchips"><span style="--c:#F2CC3C">Gesichtsmuskeln: gelb</span><span style="--c:#9B6CD1">Halsmuskeln: lila</span><span style="--c:#4CAF63">Arm- und Brustmuskeln: grün</span><span style="--c:#3F86D8">Bauchmuskeln: blau</span><span style="--c:#D94A43">Beinmuskeln: rot</span><span style="--c:#BDB6AE">Rücken/Gesäß: nicht im Auftrag</span></div>', cap);
+    var f = frame(host, '🎨 Malauftrag aus dem Heft', '<div class="wsvg">' + A.ui.svgString('muskeln', { cls: 'malauftrag' }) + '</div><div class="legendchips"><span style="--c:#F2CC3C">Gesichtsmuskeln: gelb</span><span style="--c:#9B6CD1">Halsmuskeln: lila</span><span style="--c:#4CAF63">Arm- und Brustmuskeln: grün</span><span style="--c:#3F86D8">Bauchmuskeln: blau</span><span style="--c:#D94A43">Beinmuskeln: rot</span><span style="--c:#BDB6AE">Rücken/Gesäß: nicht im Auftrag</span></div>', cap);
+    var svg = $('svg', f), pfx = svg.getAttribute('data-pfx'), M = A.diagramme.muskeln.malauftrag;
+    Object.keys(M).forEach(function (pid) { $$('[data-part="' + pid + '"]', svg).forEach(function (e) { e.setAttribute('filter', 'url(#' + pfx + 't-' + M[pid] + ')'); }); });
   };
 
   /* ---------- Atmen ---------- */
@@ -131,7 +136,7 @@
     path.setAttribute('d', d.bananaPath); path.setAttribute('class', 'bpath');
     $('.dgc', svg).appendChild(path);
     var ban = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    ban.setAttribute('class', 'banana'); ban.innerHTML = '<circle r="8" class="ban-c"/><text y="4" text-anchor="middle">🍌</text>';
+    ban.setAttribute('class', 'banana'); ban.innerHTML = '<circle r="10" class="ban-c"/><path d="M-8.4,-3.6 C-5.6,5.6 5.8,6.8 9.4,-4.2 C9.8,-5.4 8.6,-6 8,-5 C4.6,1 -2.8,1.6 -6.6,-4.4 C-7.2,-5.4 -8.8,-4.8 -8.4,-3.6 Z" fill="#FFD84A" stroke="#B88A00" stroke-width=".9"/><path d="M8.2,-5 L9.8,-7.6" stroke="#6B4A1E" stroke-width="1.6" stroke-linecap="round"/><path d="M-5.4,-1.6 C-2.4,2.6 3,3 6.2,-1.2" fill="none" stroke="#FFF3B0" stroke-width="1.1" stroke-linecap="round"/>';
     svg.appendChild(ban);
     var L = path.getTotalLength(), N = 260, samples = [];
     for (var i = 0; i <= N; i++) { var pt = path.getPointAtLength(L * i / N); samples.push([pt.x, pt.y, L * i / N]); }
@@ -203,16 +208,38 @@
   /* ---------- Sonnenfit ---------- */
   W.sonnenfit = function (host, cap) {
     var items = [['creme', '🧴', 'Sonnencreme (hoher LSF)'], ['shirt', '👕', 'lange Kleidung'], ['hut', '🧢', 'Kopfbedeckung'], ['brille', '🕶️', 'Sonnenbrille'], ['schatten', '🌳', 'Schatten'], ['mittag', '🕛', 'Mittagssonne meiden']];
-    var kid = '<svg class="dg sunkid" viewBox="0 0 220 230" role="img" aria-label="Kind in der Sonne">' +
-      '<g class="sk-sun"><circle cx="190" cy="30" r="16" fill="#FFC93C"/><path d="M190 4v-0M190 8v-6M212 30h6M164 30h-6M206 14l4-4M174 14l-4-4" stroke="#FFC93C" stroke-width="3" stroke-linecap="round"/></g>' +
-      '<g class="it it-schatten"><path d="M20 90 C20 40 90 30 100 86 Z" fill="#5FAF6B"/><rect x="56" y="80" width="8" height="140" fill="#8B5E3C"/><path d="M20 220 L140 220" stroke="#5FAF6B" stroke-width="6" opacity=".35"/></g>' +
-      '<g class="kidb"><rect x="98" y="118" width="40" height="56" rx="12" class="kidskin2"/><g class="it it-shirt"><rect x="94" y="116" width="48" height="60" rx="12" fill="#4F8FD8"/><rect x="84" y="120" width="14" height="44" rx="7" fill="#4F8FD8"/><rect x="138" y="120" width="14" height="44" rx="7" fill="#4F8FD8"/></g>' +
-      '<circle cx="118" cy="92" r="24" class="kidskin"/><circle cx="110" cy="92" r="2.4" fill="#2b2b2b"/><circle cx="126" cy="92" r="2.4" fill="#2b2b2b"/><path d="M110 103 Q118 109 126 103" stroke="#2b2b2b" stroke-width="2" fill="none"/>' +
-      '<g class="it it-brille"><rect x="102" y="86" width="13" height="10" rx="4" fill="#222"/><rect x="121" y="86" width="13" height="10" rx="4" fill="#222"/><path d="M115 90 h6" stroke="#222" stroke-width="2"/></g>' +
-      '<g class="it it-hut"><path d="M94 78 C96 60 140 60 142 78 Z" fill="#E4572E"/><rect x="88" y="74" width="62" height="7" rx="3.5" fill="#E4572E"/></g>' +
-      '<rect x="102" y="172" width="12" height="44" rx="6" class="kidskin"/><rect x="122" y="172" width="12" height="44" rx="6" class="kidskin"/>' +
-      '<g class="it it-creme"><path d="M104 104 l4 -4 M130 104 l4 -4 M100 140 l5 -3" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><rect x="150" y="150" width="16" height="26" rx="4" fill="#FFB703"/><rect x="153" y="144" width="10" height="7" rx="2" fill="#E85D04"/><text x="158" y="168" font-size="8" text-anchor="middle" fill="#fff" font-weight="700">50</text></g></g>' +
-      '<g class="it it-mittag"><circle cx="40" cy="190" r="18" fill="#fff" stroke="#888" stroke-width="2"/><path d="M40 190 v-12 M40 190 h8" stroke="#333" stroke-width="2.4" stroke-linecap="round"/><path d="M24 206 L56 174" stroke="#D94A43" stroke-width="4" stroke-linecap="round"/></g></svg>';
+    var G = A.G, P = function (x) { return x.replace(/\{P\}/g, 'sun-'); };
+    var SK = { fill: 'url(#{P}gSkinH)', stroke: G.C.skin, 'stroke-width': 1, 'stroke-linejoin': 'round' };
+    var BLUE = { fill: '#4F8FD8', stroke: '#2F67AD', 'stroke-width': 1, 'stroke-linejoin': 'round' };
+    var rays = '', ra;
+    for (ra = 0; ra < 360; ra += 45) { var rr = ra * Math.PI / 180; rays += 'M' + (190 + Math.cos(rr) * 20).toFixed(1) + ',' + (30 + Math.sin(rr) * 20).toFixed(1) + ' L' + (190 + Math.cos(rr) * 27).toFixed(1) + ',' + (30 + Math.sin(rr) * 27).toFixed(1) + ' '; }
+    function limb(P4, w0, w1, o) { return G.path(G.limb(P4, w0, w1, 0).d, o); }
+    var armL = limb([[100, 122], [97, 136], [93, 150], [90, 164]], 10, 8, SK) + G.circ(89.5, 167, 5.4, SK);
+    var legL = G.rect(104.5, 180, 11.5, 38, 5.5, SK) + G.path('M101,214 L116,214 C117,219 115,222 111,222 L99,222 C96,222 96,217 101,214 Z', { fill: 'url(#{P}gShoe)', stroke: '#B8401C', 'stroke-width': 0.9 });
+    var kid = '<svg class="dg sunkid" viewBox="0 0 220 230" role="img" aria-label="Kind in der Sonne"><defs>' + P(G.defs()) + '</defs>' + P(
+      G.ground(118, 222, 60, 5) +
+      '<g class="sk-sun">' + G.circ(190, 30, 30, { fill: 'url(#{P}gSunGlow)' }) + G.path(rays, { stroke: '#FFB703', 'stroke-width': 3.4, 'stroke-linecap': 'round' }) + G.circ(190, 30, 15, { fill: 'url(#{P}gSun)' }) + G.gloss(185, 25, 5, 3, -30, 0.7) + '</g>' +
+      '<g class="it it-schatten">' + G.ell(58, 222, 52, 6, { fill: '#2F6B3A', opacity: 0.22 }) + G.rect(53, 92, 11, 130, 4, { fill: '#8B5E3C', stroke: '#5E3B22', 'stroke-width': 1 }) +
+        G.circ(36, 82, 24, { fill: '#4E9F5D' }) + G.circ(80, 76, 26, { fill: '#5DB16B' }) + G.circ(58, 54, 27, { fill: '#6CC27A' }) + G.gloss(50, 42, 11, 5, -20, 0.5) + '</g>' +
+      '<g class="kidb">' + G.both(legL, 118) + G.both(armL, 118) +
+        G.path('M100,120 C106,115.5 130,115.5 136,120 L138,170 L98,170 Z', { fill: 'url(#{P}gVitD)', stroke: '#D9A400', 'stroke-width': 1, 'stroke-linejoin': 'round' }) +
+        G.path('M97,166 L139,166 L140,186 L120.5,186 L118,177 L115.5,186 L96,186 Z', { fill: 'url(#{P}gShort)', stroke: '#22397A', 'stroke-width': 1, 'stroke-linejoin': 'round' }) +
+        '<g class="it it-shirt">' + G.path('M97,118 C105,112.5 131,112.5 139,118 L141,172 L95,172 Z', BLUE) + limb([[99, 120], [96, 135], [92, 149], [89, 161]], 12.5, 10.5, BLUE) + limb([[137, 120], [140, 135], [144, 149], [147, 161]], 12.5, 10.5, BLUE) +
+          G.rect(103.5, 182, 13.5, 30, 5, BLUE) + G.rect(119, 182, 13.5, 30, 5, BLUE) + G.path('M96,166 L140,166 L141,186 L95,186 Z', BLUE) + '</g>' +
+        G.rect(112, 106, 12, 13, 5, SK) + G.both(G.ell(95.5, 93, 3.6, 5, SK), 118) +
+        G.circ(118, 92, 23, { fill: 'url(#{P}gSkinR)', stroke: G.C.skin, 'stroke-width': 1.1 }) +
+        G.path('M95,90 C93,70 106,62 118,62 C132,62 143,70 141,90 C138,80 130,76 122,76 C116,80 106,80 100,78 C97,82 96,86 95,90 Z', { fill: 'url(#{P}gHair)', stroke: '#3A2418', 'stroke-width': 0.9 }) +
+        G.both(G.ell(110.5, 94, 2.2, 2.7, { fill: '#2A2230' }) + G.circ(111.3, 93, 0.8, { fill: '#FFFFFF' }) + G.ell(104.5, 101, 4, 2.2, { fill: '#F49C94', opacity: 0.55 }), 118) +
+        G.path('M110.5,103 Q118,109.5 125.5,103', { fill: 'none', stroke: '#7A3B2E', 'stroke-width': 1.8, 'stroke-linecap': 'round' }) +
+        '<g class="it it-brille">' + G.rect(102.5, 88, 12.5, 9, 4, { fill: '#1F2633' }) + G.rect(121, 88, 12.5, 9, 4, { fill: '#1F2633' }) + G.path('M115,91.5 h6', { stroke: '#1F2633', 'stroke-width': 2 }) +
+          G.path('M105,90.5 L109,90.5 M123.5,90.5 L127.5,90.5', { stroke: '#FFFFFF', 'stroke-width': 1.2, opacity: 0.6, 'stroke-linecap': 'round' }) + '</g>' +
+        '<g class="it it-hut">' + G.ell(118, 73, 31, 6.5, { fill: '#E4572E', stroke: '#B23A18', 'stroke-width': 1 }) + G.path('M99,73 C99,55 137,55 137,73 Z', { fill: '#F06A3E', stroke: '#B23A18', 'stroke-width': 1 }) +
+          G.path('M100,68 C110,65 126,65 136,68 L136.6,72 C126,69 110,69 99.4,72 Z', { fill: '#FFD34D' }) + G.gloss(112, 61, 8, 2.6, -10, 0.5) + '</g>' +
+        '<g class="it it-creme">' + G.path('M104,99 l4,-3 M128,99 l4,-3 M92,142 l5,-3 M141,142 l5,-3 M108,200 l4,-3', { stroke: '#FFFFFF', 'stroke-width': 2.4, 'stroke-linecap': 'round' }) +
+          G.rect(152, 150, 17, 27, 5, { fill: 'url(#{P}gVitD)', stroke: '#D98A00', 'stroke-width': 1 }) + G.rect(155.5, 143.5, 10, 7.5, 2, { fill: '#E85D04' }) + '<text x="160.5" y="168" font-size="8" text-anchor="middle" fill="#8A4A00" font-weight="800">50</text></g>' +
+      '</g>' +
+      '<g class="it it-mittag">' + G.circ(40, 192, 18, { fill: '#FFFFFF', stroke: '#8A94A6', 'stroke-width': 2 }) + G.path('M40,192 V180 M40,192 H48', { stroke: '#1E2433', 'stroke-width': 2.4, 'stroke-linecap': 'round' }) +
+        G.path('M24,208 L56,176', { stroke: '#D94A43', 'stroke-width': 4, 'stroke-linecap': 'round' }) + '</g>') + '</svg>';
     var f = frame(host, '😎 Mach dich sonnenfit!', '<div class="wrow"><div class="wsvg narrow">' + kid + '</div><div class="wside"><div class="sunitems">' + items.map(function (it) {
       return '<button class="sunb" data-k="' + it[0] + '" aria-pressed="false">' + it[1] + ' ' + it[2] + '</button>';
     }).join('') + '</div><p class="wtext sunmsg">Tippe alles an, was dich schützt.</p></div></div>', cap);
