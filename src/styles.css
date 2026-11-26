@@ -517,6 +517,7 @@ select.gap.no { border-color: var(--no); background: var(--no-bg); }
   .ring-w { margin: 0 auto; }
   .fig-row, .wrow { grid-template-columns: 1fr; }
   .legend { max-height: none; grid-template-columns: 1fr 1fr; }
+  .legend.one { grid-template-columns: 1fr; }
   .legend small { display: none; }
   .legend li.on small { display: block; }
   .qtext { font-size: 18.5px; }

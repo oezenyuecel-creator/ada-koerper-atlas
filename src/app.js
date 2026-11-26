@@ -207,6 +207,15 @@
   }
   A.ui.svgString = svgString; A.ui.highlight = highlight; A.ui.clearHL = clearHL; A.ui.chainAt = chainAt; A.ui.partOf = partOf; A.ui.markPart = markPart;
 
+  /* Legende: zwei Spalten nur, wenn jeder Name hineinpasst – sonst eine Spalte (nie abgeschnittene Namen) */
+  function fitLegend(ol) {
+    if (!ol) return;
+    ol.classList.remove('one');
+    if (ol.clientWidth && ol.scrollWidth > ol.clientWidth + 1) ol.classList.add('one');
+  }
+  var fitT = null;
+  window.addEventListener('resize', function () { clearTimeout(fitT); fitT = setTimeout(function () { $$('.legend').forEach(fitLegend); }, 120); });
+
   /* Erkunden: Grafik + Legende */
   function explorer(host, did, cap) {
     var d = DG[did];
@@ -241,6 +250,7 @@
       clearHL(svg);
     });
     $('[data-act=quiz]', host).addEventListener('click', function () { location.hash = '#/bildquiz/' + did; });
+    fitLegend($('.legend', host));
   }
   A.ui.explorer = explorer;
 

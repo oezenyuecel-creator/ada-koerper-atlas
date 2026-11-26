@@ -528,6 +528,7 @@ select.gap.no { border-color: var(--no); background: var(--no-bg); }
   .ring-w { margin: 0 auto; }
   .fig-row, .wrow { grid-template-columns: 1fr; }
   .legend { max-height: none; grid-template-columns: 1fr 1fr; }
+  .legend.one { grid-template-columns: 1fr; }
   .legend small { display: none; }
   .legend li.on small { display: block; }
   .qtext { font-size: 18.5px; }
@@ -3558,6 +3559,15 @@ select.gap.no { border-color: var(--no); background: var(--no-bg); }
   }
   A.ui.svgString = svgString; A.ui.highlight = highlight; A.ui.clearHL = clearHL; A.ui.chainAt = chainAt; A.ui.partOf = partOf; A.ui.markPart = markPart;
 
+  /* Legende: zwei Spalten nur, wenn jeder Name hineinpasst – sonst eine Spalte (nie abgeschnittene Namen) */
+  function fitLegend(ol) {
+    if (!ol) return;
+    ol.classList.remove('one');
+    if (ol.clientWidth && ol.scrollWidth > ol.clientWidth + 1) ol.classList.add('one');
+  }
+  var fitT = null;
+  window.addEventListener('resize', function () { clearTimeout(fitT); fitT = setTimeout(function () { $$('.legend').forEach(fitLegend); }, 120); });
+
   /* Erkunden: Grafik + Legende */
   function explorer(host, did, cap) {
     var d = DG[did];
@@ -3592,6 +3602,7 @@ select.gap.no { border-color: var(--no); background: var(--no-bg); }
       clearHL(svg);
     });
     $('[data-act=quiz]', host).addEventListener('click', function () { location.hash = '#/bildquiz/' + did; });
+    fitLegend($('.legend', host));
   }
   A.ui.explorer = explorer;
 
